@@ -331,9 +331,13 @@ def collect_command(args: argparse.Namespace) -> int:
         session = normalizers[provider](path)
         started_at = parse_timestamp(session.get("started_at"))
         ended_at = parse_timestamp(session.get("ended_at"))
-        if not started_at and not ended_at:
+        if started_at is None and ended_at is None:
             continue
-        if (ended_at or started_at) < since or (started_at or ended_at) > until:
+        session_start = started_at if started_at is not None else ended_at
+        session_end = ended_at if ended_at is not None else started_at
+        if session_start is None or session_end is None:
+            continue
+        if session_end < since or session_start > until:
             continue
         if args.project and session.get("project") not in args.project:
             continue
