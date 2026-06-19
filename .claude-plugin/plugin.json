@@ -1,0 +1,8 @@
+{
+  "name": "skill-or-be-skilled",
+  "description": "Portable skills for deliberate collaboration with AI agents",
+  "skills": [
+    "./skills/productivity/co-plan",
+    "./skills/productivity/reflect"
+  ]
+}

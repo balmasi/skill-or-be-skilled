@@ -1,0 +1,6 @@
+{"type":"mode","mode":"normal","sessionId":"claude-session-1"}
+{"type":"user","sessionId":"claude-session-1","timestamp":"2026-06-10T10:00:00Z","cwd":"/projects/demo","isMeta":true,"message":{"role":"user","content":"<command-name>/clear</command-name>"}}
+{"type":"user","sessionId":"claude-session-1","timestamp":"2026-06-10T10:01:00Z","cwd":"/projects/demo","isMeta":false,"message":{"role":"user","content":[{"type":"text","text":"Add analytics to every page."}]}}
+{"type":"assistant","sessionId":"claude-session-1","timestamp":"2026-06-10T10:01:01Z","cwd":"/projects/demo","message":{"role":"assistant","content":[{"type":"text","text":"I will inspect the global layout."},{"type":"tool_use","id":"tool-1","name":"Bash","input":{"command":"rg --files"}}]}}
+{"type":"user","sessionId":"claude-session-1","timestamp":"2026-06-10T10:01:02Z","cwd":"/projects/demo","isMeta":false,"message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"tool-1","content":"app/layout.tsx\n","is_error":false}]}}
+{"type":"assistant","sessionId":"claude-session-1","timestamp":"2026-06-10T10:01:03Z","cwd":"/projects/demo","message":{"role":"assistant","content":[{"type":"text","text":"The global layout is the correct seam."}]}}
