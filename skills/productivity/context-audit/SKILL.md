@@ -31,7 +31,7 @@ python3 <skill-directory>/scripts/analyze.py --capture /tmp/ca/base
 
 Reports total tokens split into tool schemas / system prompt / messages, then each
 tool's schema cost, plus whatever per-group breakdowns the agent supports (for
-Claude Code: deferred tool names per MCP server, and the skills list per skill).
+Claude Code: deferred tool names per MCP server and skills; Codex: skills).
 
 ## 2. Let the user pick
 

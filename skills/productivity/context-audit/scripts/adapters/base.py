@@ -13,6 +13,7 @@ capture.py, analyze.py and sweep.py contain no agent-specific logic; all of it
 lives in an Adapter subclass. See reference/adding-an-adapter.md.
 """
 from dataclasses import dataclass, field
+import re
 from typing import Callable, List, Optional, Sequence, Tuple
 
 
@@ -44,6 +45,17 @@ class Section:
     match: Callable[[str], bool]
     split: Callable[[str], Sequence[Tuple[str, float, str]]]
     limit: Optional[int] = None      # show only the top N rows
+
+
+def split_skill_rows(text: str):
+    """Aggregate Agent Skills list entries by public skill name."""
+    weights = {}
+    for part in re.split(r'\n(?=- [\w:-]+: )', text):
+        match = re.match(r'- ([\w:-]+):', part.strip())
+        if match:
+            weights[match.group(1)] = weights.get(match.group(1), 0) + len(part)
+    return [(name, size, "")
+            for name, size in sorted(weights.items(), key=lambda x: -x[1])]
 
 
 class Counter:
@@ -96,6 +108,11 @@ class Adapter:
         """Return an error string if the capture is demonstrably incomplete
         (e.g. it raced ahead of MCP registration). None means it looks sound."""
         return None
+
+    def capture_headers(self, headers: dict) -> dict:
+        """Headers to persist beside the request. Drop credentials when pricing
+        does not need them."""
+        return headers
 
     def disable_tools_args(self, names: Sequence[str]) -> List[str]:
         """CLI args that strip the given tools' schemas from the request."""

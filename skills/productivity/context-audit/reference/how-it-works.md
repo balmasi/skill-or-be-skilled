@@ -1,23 +1,25 @@
 # How context-audit works
 
-Measure exactly what a coding agent's own tools, MCP servers, and skills cost in
-context on the first prompt of a session — then cut the expensive ones.
+Measure what a coding agent's own tools, MCP servers, and skills cost in context
+on the first prompt of a session — then cut the expensive ones.
 
-Every number comes from the actual API request the agent sends. Nothing is
-estimated, and it costs no model tokens: the capture never reaches a model, and
-pricing goes through a token-counting endpoint or a local tokenizer.
+Attribution starts from the actual API request the agent sends, not reconstructed
+config. Counting is adapter-specific: Claude uses its exact counting endpoint;
+Codex uses a local estimate. Neither costs model tokens because the capture never
+reaches a model.
 
 ## Supported agents
 
 | Agent | `--agent` | Notes |
 |---|---|---|
 | Claude Code | `claude` (default) | [`agent-claude.md`](./agent-claude.md) |
+| Codex CLI | `codex` | [`agent-codex.md`](./agent-codex.md) |
 
-That's the only one implemented today, but the pipeline is agent-neutral: driving
+The pipeline is agent-neutral: driving
 the CLI, parsing the provider's wire format, and counting tokens all sit behind an
 adapter in `scripts/adapters/<agent>.py`, with the accompanying judgment (what's
-safe to cut, where settings live) in [`agent-<agent>.md`](.). To add one —
-Codex, say — see [`adding-an-adapter.md`](./adding-an-adapter.md); the three scripts shouldn't
+safe to cut, where settings live) in [`agent-<agent>.md`](.). To add another
+agent, see [`adding-an-adapter.md`](./adding-an-adapter.md); the three scripts shouldn't
 need to change.
 
 ## Requirements
@@ -105,5 +107,6 @@ early capture better than blind padding does.
 
 ## Verifying
 
-A reported total should match the token usage of a real run of the same agent in
-the same directory. The exact command is on the agent's reference page.
+An adapter using a provider counting endpoint should match a real run. A local
+estimator should be compared with server usage to understand its error. The exact
+verification command is on each agent's reference page.

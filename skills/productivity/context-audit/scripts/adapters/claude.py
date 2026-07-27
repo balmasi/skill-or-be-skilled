@@ -4,7 +4,7 @@ import hashlib, json, os, re, time, urllib.error, urllib.request
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 
-from .base import Adapter, Capture, Counter, Section, Tool
+from .base import Adapter, Capture, Counter, Section, Tool, split_skill_rows
 
 API = "https://api.anthropic.com/v1/messages/count_tokens"
 CACHE = os.path.expanduser("~/.cache/context-audit/claude/prices.json")
@@ -199,9 +199,7 @@ class ClaudeAdapter(Adapter):
 
     @staticmethod
     def _split_skills(text):
-        rows = [(m.group(1), len(p)) for p in re.split(r'\n(?=- [\w:-]+: )', text)
-                if (m := re.match(r'- ([\w:-]+):', p.strip()))]
-        return [(n, c, "") for n, c in sorted(rows, key=lambda x: -x[1])]
+        return split_skill_rows(text)
 
     # --- price -----------------------------------------------------------
     def counter(self, headers, jobs=16, use_cache=True):

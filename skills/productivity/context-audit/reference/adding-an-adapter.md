@@ -10,9 +10,9 @@ Subclass `adapters.base.Adapter` and register it in `adapters/__init__.py`.
 Three groups of methods:
 
 **drive** — `env`, `command`, `send_prompt`, `wait_ready`, `self_check`,
-`disable_tools_args`. `env` must point the agent at `http://127.0.0.1:{port}`
-via whatever base-URL variable it honours (`ANTHROPIC_BASE_URL`,
-`OPENAI_BASE_URL`, …). `wait_ready` must not return until everything that will
+`disable_tools_args`. `env` and `command` must point the agent at
+`http://127.0.0.1:{port}` via its base-URL environment variable or one-off CLI
+config. `wait_ready` must not return until everything that will
 appear in the request has loaded; blind sleeps produce silently wrong numbers,
 which is why `self_check` exists as a second line of defence.
 
@@ -26,7 +26,8 @@ returns `(label, weight, note)` rows whose weights apportion the block's cost.
 **price** — return a `Counter`. It needs `count(tools, system, messages)`, and
 may override `tool_price` (Claude's caches on disk by schema hash) and `wave`
 (to run counts concurrently). A provider without a token-counting endpoint can
-tokenise locally instead — the pipeline only needs integers back.
+count or estimate locally instead — the pipeline only needs integers back, but
+the agent reference must label estimates plainly.
 
 ## 2. Things that will bite
 

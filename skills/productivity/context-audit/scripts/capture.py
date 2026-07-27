@@ -18,8 +18,9 @@ def free_port():
 
 
 class Capturer:
-    def __init__(self, outdir):
+    def __init__(self, outdir, header_filter=lambda h: h):
         self.outdir = outdir; self.n = 0; self.first = threading.Event()
+        self.header_filter = header_filter
         os.makedirs(outdir, exist_ok=True)
 
     def serve(self, port):
@@ -39,7 +40,7 @@ class Capturer:
                 if cap.n == 1:
                     with open(f"{cap.outdir}/request.json", "wb") as f: f.write(body)
                     with open(f"{cap.outdir}/headers.json", "w") as f:
-                        json.dump(dict(self.headers), f, indent=1)
+                        json.dump(cap.header_filter(dict(self.headers)), f, indent=1)
                     cap.first.set()
                 # 400 = non-retryable; the CLI gives up at once instead of backing off
                 self._reply(400, {"type": "error",
@@ -75,7 +76,7 @@ def main():
         if os.path.exists(p): os.remove(p)
 
     port = free_port()
-    cap = Capturer(a.outdir); cap.serve(port)
+    cap = Capturer(a.outdir, ad.capture_headers); cap.serve(port)
 
     env = ad.env(os.environ, port, a.tool_search)
     cmd = ad.command(logpath, a.tool_search, a.extra)

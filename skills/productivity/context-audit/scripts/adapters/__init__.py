@@ -10,7 +10,8 @@ ADAPTERS = {}
 
 def _register():
     from .claude import ClaudeAdapter
-    for cls in (ClaudeAdapter,):
+    from .codex import CodexAdapter
+    for cls in (ClaudeAdapter, CodexAdapter):
         ADAPTERS[cls.name] = cls
 
 

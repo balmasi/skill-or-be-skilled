@@ -119,7 +119,7 @@ def main():
             groups[label] = w / tot * tok
             print(f"    {label:52} {groups[label]:7,.0f}  {note}".rstrip())
 
-    print(f"\n  [{count.calls} api calls, {count.cached} from cache]")
+    print(f"\n  [{count.calls} count calls, {count.cached} from cache]")
     if a.json_out:
         json.dump({"agent": ad.name, "total": total, "tool_schemas": total - no_tools,
                    "system": total - no_sys, "messages": msg_only,

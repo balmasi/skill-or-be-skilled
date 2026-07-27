@@ -18,6 +18,26 @@ def load_capture():
     return json.loads((FIXTURES / "claude-capture.json").read_text())
 
 
+def codex_capture():
+    return {
+        "model": "gpt-5.6",
+        "input": [
+            {"type": "additional_tools", "role": "developer", "tools": [
+                {"type": "function", "name": "shell", "description": "run commands",
+                 "parameters": {"type": "object"}},
+                {"type": "namespace", "name": "collaboration", "tools": []},
+            ]},
+            {"type": "message", "role": "developer", "content": [
+                {"type": "input_text", "text": "system instructions"},
+                {"type": "input_text", "text": "<skills_instructions>\n## Skills\n### Available skills\n- co-plan: plan things\n- reflect: review work\n- co-plan: second root\n</skills_instructions>"},
+            ]},
+            {"type": "message", "role": "user", "content": [
+                {"type": "input_text", "text": "say ok"},
+            ]},
+        ],
+    }
+
+
 class AdapterRegistryTest(unittest.TestCase):
     def test_default_is_claude(self):
         self.assertEqual(adapters.get().name, "claude")
@@ -91,6 +111,43 @@ class ClaudeSectionsTest(unittest.TestCase):
     def test_sections_do_not_match_unrelated_blocks(self):
         for section in self.sections.values():
             self.assertFalse(section.match("say ok"))
+
+
+class CodexAdapterTest(unittest.TestCase):
+    def setUp(self):
+        self.adapter = adapters.get("codex")
+        self.capture = self.adapter.parse(codex_capture())
+
+    def test_additional_tools_are_parsed_in_provider_shape(self):
+        self.assertEqual([t.name for t in self.capture.tools],
+                         ["shell", "collaboration"])
+        self.assertEqual(self.capture.tools[0].schema,
+                         codex_capture()["input"][0]["tools"][0])
+
+    def test_developer_input_is_system_and_user_input_is_messages(self):
+        self.assertEqual(len(self.capture.system), 1)
+        self.assertEqual(self.capture.system[0]["role"], "developer")
+        self.assertEqual(len(self.capture.messages), 1)
+        self.assertEqual(self.capture.messages[0]["role"], "user")
+
+    def test_skills_section_splits_rows(self):
+        section = next(s for s in self.adapter.sections() if s.title == "skills")
+        text = next(t for t in self.capture.texts if section.match(t))
+        rows = {name: weight for name, weight, _ in section.split(text)}
+        self.assertEqual(set(rows), {"co-plan", "reflect"})
+        self.assertGreater(rows["co-plan"], rows["reflect"])
+
+    def test_counter_matches_codex_four_bytes_per_token_estimator(self):
+        counter = self.adapter.counter({})
+        item = {"role": "user", "content": "12345"}
+        raw = json.dumps(item, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(counter.count(messages=[item]), (len(raw) + 3) // 4)
+
+    def test_credentials_are_not_persisted(self):
+        kept = self.adapter.capture_headers({"Authorization": "secret",
+                                             "chatgpt-account-id": "private",
+                                             "Content-Type": "application/json"})
+        self.assertEqual(kept, {"Content-Type": "application/json"})
 
 
 class SchemaCostTest(unittest.TestCase):
