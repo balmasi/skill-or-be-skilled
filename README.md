@@ -40,5 +40,4 @@ ever replaces the links with copies, run it again.
 `validate:skill` checks frontmatter, naming, and that every skill is listed in
 `.claude-plugin/plugin.json` — an unlisted skill installs ungrouped under "General".
 
-`validate:publish` installs from GitHub into a throwaway `HOME` and checks the result,
-so push first. `validate` runs both.
+`validate:publish` installs from GitHub into a throwaway `HOME` and checks the result, so push first. `validate` runs both.
