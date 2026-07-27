@@ -9,8 +9,11 @@
     "url": "https://github.com/balmasi/skill-or-be-skilled"
   },
   "scripts": {
+    "link": "node scripts/link-dev.mjs",
     "test": "python3 -m unittest discover -s tests -v",
-    "validate": "node scripts/validate.mjs"
+    "validate": "npm run validate:skill && npm run validate:publish",
+    "validate:skill": "node scripts/validate-skill.mjs",
+    "validate:publish": "node scripts/validate-publish.mjs"
   },
   "engines": {
     "node": ">=20"

@@ -15,4 +15,6 @@ jobs:
         with:
           node-version: 20
       - run: npm test
-      - run: npm run validate
+      # Not `npm run validate`: validate:publish installs from the default
+      # branch on GitHub, so on a PR it would check main, not this commit.
+      - run: npm run validate:skill
