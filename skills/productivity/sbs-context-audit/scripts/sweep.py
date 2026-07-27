@@ -5,10 +5,8 @@ Captures are independent processes, so they run concurrently: N scenarios cost
 about as long as the slowest one rather than N x one. Prints each scenario's real
 first-prompt total and its delta against the first scenario listed.
 
-  sweep.py --cwd ~/proj --workdir /tmp/ca \
-      "baseline=" \
-      "no-workflow=--disallowed-tools Workflow" \
-      "lean=--disallowed-tools Workflow Agent ScheduleWakeup ReportFindings"
+  sweep.py --agent AGENT --cwd ~/proj --workdir /tmp/ca \
+      "baseline=" "candidate=AGENT_SPECIFIC_ARGS"
 """
 import argparse, json, os, shlex, subprocess, sys, time
 from concurrent.futures import ThreadPoolExecutor

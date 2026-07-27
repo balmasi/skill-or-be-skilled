@@ -1,7 +1,7 @@
 """Adapter registry.
 
 Add an agent by dropping a module here that exports an Adapter subclass and
-listing it in ADAPTERS. See reference/adding-an-adapter.md.
+listing it in ADAPTERS.
 """
 from .base import Adapter, Capture, Counter, Section, Tool
 

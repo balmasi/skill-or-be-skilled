@@ -10,7 +10,7 @@ An adapter answers three questions the generic pipeline cannot:
   price   how many tokens is a given (tools, system, messages) triple?
 
 capture.py, analyze.py and sweep.py contain no agent-specific logic; all of it
-lives in an Adapter subclass. See reference/adding-an-adapter.md.
+lives in an Adapter subclass.
 """
 from dataclasses import dataclass, field
 import re
@@ -124,6 +124,10 @@ class Adapter:
 
     def sections(self) -> List[Section]:
         """Extra per-block breakdowns to report. May be empty."""
+        return []
+
+    def controls(self, capture: Capture) -> List[Tuple[str, str]]:
+        """Agent-specific configuration affordances worth showing."""
         return []
 
     # --- price -----------------------------------------------------------

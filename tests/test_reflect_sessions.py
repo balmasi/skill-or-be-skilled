@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "skills" / "productivity" / "reflect" / "scripts" / "sessions.py"
+SCRIPT = ROOT / "skills" / "productivity" / "sbs-reflect" / "scripts" / "sessions.py"
 FIXTURES = ROOT / "tests" / "fixtures"
 
 

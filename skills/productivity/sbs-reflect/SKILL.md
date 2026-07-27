@@ -1,5 +1,5 @@
 ---
-name: reflect
+name: sbs-reflect
 description: Reviews agent conversations to find repeated friction, missed skill opportunities, and workflow loops worth improving. Use when the user asks to reflect on current or past work, improve agent workflows, identify recurring corrections or waste, or estimate the leverage of process changes.
 ---
 

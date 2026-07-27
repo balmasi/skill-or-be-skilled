@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPTS = ROOT / "skills" / "productivity" / "context-audit" / "scripts"
+SCRIPTS = ROOT / "skills" / "productivity" / "sbs-context-audit" / "scripts"
 FIXTURES = ROOT / "tests" / "fixtures"
 
 sys.path.insert(0, str(SCRIPTS))
@@ -23,13 +23,13 @@ def codex_capture():
         "model": "gpt-5.6",
         "input": [
             {"type": "additional_tools", "role": "developer", "tools": [
-                {"type": "function", "name": "shell", "description": "run commands",
+                {"type": "function", "name": "exec", "description": "run commands",
                  "parameters": {"type": "object"}},
                 {"type": "namespace", "name": "collaboration", "tools": []},
             ]},
             {"type": "message", "role": "developer", "content": [
                 {"type": "input_text", "text": "system instructions"},
-                {"type": "input_text", "text": "<skills_instructions>\n## Skills\n### Available skills\n- co-plan: plan things\n- reflect: review work\n- co-plan: second root\n</skills_instructions>"},
+                {"type": "input_text", "text": "<skills_instructions>\n## Skills\n### Available skills\n- sbs-coplan: plan things\n- sbs-reflect: review work\n- sbs-coplan: second root\n</skills_instructions>"},
             ]},
             {"type": "message", "role": "user", "content": [
                 {"type": "input_text", "text": "say ok"},
@@ -105,8 +105,8 @@ class ClaudeSectionsTest(unittest.TestCase):
     def test_skills_are_split_per_skill(self):
         section, text = self.block("skills")
         rows = dict((label, weight) for label, weight, _ in section.split(text))
-        self.assertEqual(set(rows), {"co-plan", "context-audit", "reflect"})
-        self.assertGreater(rows["context-audit"], rows["reflect"])
+        self.assertEqual(set(rows), {"sbs-coplan", "sbs-context-audit", "sbs-reflect"})
+        self.assertGreater(rows["sbs-context-audit"], rows["sbs-reflect"])
 
     def test_sections_do_not_match_unrelated_blocks(self):
         for section in self.sections.values():
@@ -120,7 +120,7 @@ class CodexAdapterTest(unittest.TestCase):
 
     def test_additional_tools_are_parsed_in_provider_shape(self):
         self.assertEqual([t.name for t in self.capture.tools],
-                         ["shell", "collaboration"])
+                         ["exec", "collaboration"])
         self.assertEqual(self.capture.tools[0].schema,
                          codex_capture()["input"][0]["tools"][0])
 
@@ -134,8 +134,8 @@ class CodexAdapterTest(unittest.TestCase):
         section = next(s for s in self.adapter.sections() if s.title == "skills")
         text = next(t for t in self.capture.texts if section.match(t))
         rows = {name: weight for name, weight, _ in section.split(text)}
-        self.assertEqual(set(rows), {"co-plan", "reflect"})
-        self.assertGreater(rows["co-plan"], rows["reflect"])
+        self.assertEqual(set(rows), {"sbs-coplan", "sbs-reflect"})
+        self.assertGreater(rows["sbs-coplan"], rows["sbs-reflect"])
 
     def test_counter_matches_codex_four_bytes_per_token_estimator(self):
         counter = self.adapter.counter({})
@@ -148,6 +148,13 @@ class CodexAdapterTest(unittest.TestCase):
                                              "chatgpt-account-id": "private",
                                              "Content-Type": "application/json"})
         self.assertEqual(kept, {"Content-Type": "application/json"})
+
+    def test_controls_distinguish_knobs_from_recommendations(self):
+        controls = dict(self.adapter.controls(self.capture))
+        self.assertIn("model_instructions_file", controls)
+        self.assertIn("high risk", controls["model_instructions_file"])
+        self.assertIn("no documented per-tool deny-list", controls["built-in tools"])
+        self.assertIn("load-bearing", controls["agents.enabled"])
 
 
 class SchemaCostTest(unittest.TestCase):

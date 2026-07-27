@@ -97,6 +97,28 @@ class CodexAdapter(Adapter):
         return [Section("skills", lambda t: t.startswith("<skills_instructions>"),
                         self._split_skills, limit=15)]
 
+    def controls(self, capture):
+        names = {tool.name for tool in capture.tools}
+        rows = [
+            ("developer_instructions / AGENTS.md",
+             "trim user-owned additive instructions"),
+            ("model_instructions_file",
+             "replaces Codex base instructions; high risk"),
+            ("skills.config[].enabled",
+             "discovery control; measure delta (row cost is not savings)"),
+            ("mcp_servers.<id>.enabled/disabled_tools",
+             "MCP availability control; measure delta"),
+            ("web_search",
+             "cached/indexed/live/disabled; may change capability only"),
+        ]
+        builtins = names & {"exec", "wait", "request_user_input"}
+        if builtins:
+            rows.append(("built-in tools", "no documented per-tool deny-list: " +
+                         ", ".join(sorted(builtins))))
+        if "collaboration" in names:
+            rows.append(("agents.enabled", "keep enabled: collaboration is load-bearing"))
+        return rows
+
     @staticmethod
     def _split_skills(text):
         available = text.partition("### Available skills")[2].partition(

@@ -65,7 +65,7 @@ def main():
                          "adapter's self-check detects an early capture, so padding "
                          "blind is unnecessary. Raise only if the self-check says to.")
     ap.add_argument("--extra", nargs=argparse.REMAINDER, default=[],
-                    help="extra args passed through to the agent, e.g. --extra --disallowed-tools Workflow")
+                    help="extra args passed through to the agent")
     a = ap.parse_args()
 
     ad = adapters.get(a.agent)

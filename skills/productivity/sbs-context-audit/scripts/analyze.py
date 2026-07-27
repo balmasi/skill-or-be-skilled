@@ -119,11 +119,18 @@ def main():
             groups[label] = w / tot * tok
             print(f"    {label:52} {groups[label]:7,.0f}  {note}".rstrip())
 
+    controls = ad.controls(cap)
+    if controls:
+        print("\n  adjustable controls")
+        for name, note in controls:
+            print(f"    {name:44} {note}")
+
     print(f"\n  [{count.calls} count calls, {count.cached} from cache]")
     if a.json_out:
         json.dump({"agent": ad.name, "total": total, "tool_schemas": total - no_tools,
                    "system": total - no_sys, "messages": msg_only,
-                   "tools": sch, "overhead": oh, "groups": groups},
+                   "tools": sch, "overhead": oh, "groups": groups,
+                   "controls": dict(controls)},
                   open(a.json_out, "w"), indent=1)
         print(f"  wrote {a.json_out}")
 

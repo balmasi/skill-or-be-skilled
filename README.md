@@ -21,9 +21,9 @@ Select the skills and agents you want when prompted.
 
 ### Productivity
 
-- [`co-plan`](./skills/productivity/co-plan/SKILL.md) — pressure-test a plan one decision at a time before acting.
-- [`context-audit`](./skills/productivity/context-audit/SKILL.md) — price what your tools, MCP servers, and skills cost in context, then cut the expensive ones.
-- [`reflect`](./skills/productivity/reflect/SKILL.md) — review agent conversations for repeated friction and workflow improvements.
+- [`sbs-coplan`](./skills/productivity/sbs-coplan/SKILL.md) — pressure-test a plan one decision at a time before acting.
+- [`sbs-context-audit`](./skills/productivity/sbs-context-audit/SKILL.md) — price what your tools, MCP servers, and skills cost in context, then cut the expensive ones.
+- [`sbs-reflect`](./skills/productivity/sbs-reflect/SKILL.md) — review agent conversations for repeated friction and workflow improvements.
 
 ## Develop
 
@@ -31,5 +31,3 @@ Select the skills and agents you want when prompted.
 npm test
 npm run validate
 ```
-
-Each skill is a self-contained folder whose entry point is `SKILL.md`. Keep skill behavior portable and add platform-specific metadata only when it provides necessary behavior.

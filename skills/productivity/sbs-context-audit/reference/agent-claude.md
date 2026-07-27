@@ -6,9 +6,6 @@ Messages API; adapter in `scripts/adapters/claude.py`.
 ## Requirements
 
 - `claude` on `PATH`, with an authenticated session (`claude auth`)
-- Pricing uses the free `count_tokens` endpoint with the OAuth credentials the
-  captured request carried, so no API key of your own is needed. Per-tool prices
-  cache in `~/.cache/context-audit/claude/prices.json`.
 
 ## What to cut, in rough order of payoff
 
@@ -22,6 +19,16 @@ Messages API; adapter in `scripts/adapters/claude.py`.
 - **Skills** — every `.claude/skills/*` description loads each session, so a large
   skills directory is often worth more than any single tool.
 
+Measure built-ins with space-separated names, for example:
+
+```text
+--disallowed-tools Workflow ScheduleWakeup
+```
+
+Measure all skills with `--disable-slash-commands`. To isolate an MCP server,
+pass `--strict-mcp-config --mcp-config <temporary-config>` containing every
+server except that candidate.
+
 ## Load-bearing — recommend against removing
 
 - **`Agent`** — removing it kills all subagent delegation, so `/code-review`,
@@ -31,7 +38,11 @@ Messages API; adapter in `scripts/adapters/claude.py`.
 - **`Skill`** — removing it drops the skills list, which looks like a large saving
   but disables every slash command.
 
-## Where a denial can be written
+These are Claude-specific examples of why schema subtraction undercounts:
+removing `Agent` also drops the agent-types reminder; removing `Skill` drops the
+skills list. Measure with `sweep.py`.
+
+## Apply built-in denials
 
 | Scope | File | Use when |
 |---|---|---|
@@ -56,29 +67,6 @@ The patch:
 `permissions.deny` and `--disallowed-tools` both strip the schema from the request,
 not merely block the call.
 
-## Speed
-
-Most of the runtime is MCP servers connecting. If only built-ins, skills and the
-system prompt matter, add `--extra --strict-mcp-config` to skip MCP (loses
-per-server attribution). Never use `--bare` or `--safe-mode` to go faster — they
-skip CLAUDE.md, skills and plugins, the things being measured.
-
-## Gotchas the adapter handles
-
-- A capture proxy isn't a first-party host, so the CLI disables tool search and
-  unrolls every schema. The adapter sets `ENABLE_TOOL_SEARCH=true` so you measure
-  what real sessions send. Pass `--tool-search off` when you *want* every schema
-  unrolled and priced.
-- In `-p` mode the request fires before MCP servers connect, so the prompt is fed
-  over stream-json stdin only once the debug log shows every server settled.
-- MCP server names contain hyphens, so a `\w`-based regex over the deferred
-  tool-name list silently drops servers with a `-` in the name. The self-check
-  cross-checks the parsed count against the registry count the CLI logs.
-
-## Verifying a total
-
-```bash
-claude -p "say ok" --output-format json | \
-  python3 -c "import json,sys; u=json.load(sys.stdin)['usage']; \
-  print(u['input_tokens']+u['cache_creation_input_tokens']+u['cache_read_input_tokens'])"
-```
+Remove an MCP server with `claude mcp remove <name> --scope local|project|user`.
+Individual skill removal depends on where it was installed; confirm its owner and
+path rather than guessing a generic settings patch.

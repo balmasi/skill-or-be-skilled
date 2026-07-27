@@ -41,7 +41,7 @@
         },
         {
           "type": "text",
-          "text": "<system-reminder>\nThe following skills are available for use with the Skill tool:\n\n- co-plan: Co-plans through a deep interview. Use when the user wants to make a plan.\n- context-audit: Measures what an agent's tools cost in context. Use when shrinking context overhead.\n- reflect: Reviews agent conversations. Use when the user asks to reflect.\n</system-reminder>"
+          "text": "<system-reminder>\nThe following skills are available for use with the Skill tool:\n\n- sbs-coplan: Co-plans through a deep interview. Use when the user wants to make a plan.\n- sbs-context-audit: Measures what an agent's tools cost in context. Use when shrinking context overhead.\n- sbs-reflect: Reviews agent conversations. Use when the user asks to reflect.\n</system-reminder>"
         },
         { "type": "text", "text": "say ok" }
       ]
