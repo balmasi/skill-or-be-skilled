@@ -3,6 +3,7 @@
   "description": "Portable skills for deliberate collaboration with AI agents",
   "skills": [
     "./skills/productivity/co-plan",
+    "./skills/productivity/context-audit",
     "./skills/productivity/reflect"
   ]
 }

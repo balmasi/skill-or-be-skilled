@@ -22,6 +22,7 @@ Select the skills and agents you want when prompted.
 ### Productivity
 
 - [`co-plan`](./skills/productivity/co-plan/SKILL.md) — pressure-test a plan one decision at a time before acting.
+- [`context-audit`](./skills/productivity/context-audit/SKILL.md) — price what your tools, MCP servers, and skills cost in context, then cut the expensive ones.
 - [`reflect`](./skills/productivity/reflect/SKILL.md) — review agent conversations for repeated friction and workflow improvements.
 
 ## Develop
