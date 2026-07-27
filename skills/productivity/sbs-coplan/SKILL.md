@@ -1,5 +1,5 @@
 ---
-name: co-plan
+name: sbs-coplan
 description: Co-plans through a deep, one-question-at-a-time interview. Use when the user wants to make a plan, clarify an approach, choose among options, or stress-test a proposal before acting.
 ---
 

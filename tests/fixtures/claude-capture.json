@@ -1,0 +1,50 @@
+{
+  "model": "claude-haiku-4-5-20251001",
+  "system": [
+    {
+      "type": "text",
+      "text": "You are Claude Code, Anthropic's official CLI for Claude."
+    }
+  ],
+  "tools": [
+    {
+      "name": "Bash",
+      "description": "Executes a bash command and returns its output.",
+      "input_schema": {
+        "type": "object",
+        "properties": { "command": { "type": "string" } },
+        "required": ["command"]
+      }
+    },
+    {
+      "name": "Read",
+      "description": "Reads a file from the local filesystem.",
+      "input_schema": {
+        "type": "object",
+        "properties": { "file_path": { "type": "string" } },
+        "required": ["file_path"]
+      }
+    },
+    {
+      "name": "DeferredToolPlaceholder",
+      "description": "Pseudo-tool the API rejects when sent alone.",
+      "input_schema": { "type": "object", "properties": {} }
+    }
+  ],
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "<system-reminder>\nThe following deferred tools are now available via ToolSearch:\nWebFetch\nWebSearch\nmcp__kai-staging-airtable__list_records\nmcp__kai-staging-airtable__create_record\nmcp__kai-prod-n8n-mcp__n8n_health_check\nmcp__plain__search\n</system-reminder>"
+        },
+        {
+          "type": "text",
+          "text": "<system-reminder>\nThe following skills are available for use with the Skill tool:\n\n- sbs-coplan: Co-plans through a deep interview. Use when the user wants to make a plan.\n- sbs-context-audit: Measures what an agent's tools cost in context. Use when shrinking context overhead.\n- sbs-reflect: Reviews agent conversations. Use when the user asks to reflect.\n</system-reminder>"
+        },
+        { "type": "text", "text": "say ok" }
+      ]
+    }
+  ]
+}
